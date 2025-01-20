@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
 
 // Inicializa o EmailJS com sua Public Key
-emailjs.init("JrGkX-cH-Qbjw8z-N");
+emailjs.init(REACT_APP_EMAILJS_PUBLIC_KEY);
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -39,19 +39,19 @@ const ContactForm = () => {
     // Envia o e-mail para o administrador
     emailjs
       .sendForm(
-        'service_ifwe57b', // Seu Service ID do EmailJS
-        'template_djnmenm', // Template ID para o administrador
+        REACT_APP_EMAILJS_SERVICE_ID, // Seu Service ID do EmailJS
+        REACT_APP_EMAILJS_TEMPLATE_ADMIN, // Template ID para o administrador
         e.target, // O formulário HTML completo
-        'JrGkX-cH-Qbjw8z-N' // Chave pública
+        REACT_APP_EMAILJS_PUBLIC_KEY // Chave pública
       )
       .then(() => {
         // Após o envio bem-sucedido para o administrador, envia o e-mail para o usuário
         emailjs
           .send(
-            'service_ifwe57b', // Seu Service ID do EmailJS
-            'template_2knh2vb', // Template ID para o usuário
+            REACT_APP_EMAILJS_SERVICE_ID, // Seu Service ID do EmailJS
+            REACT_APP_EMAILJS_TEMPLATE_USER, // Template ID para o usuário
             userEmailParams, // Dados do e-mail do usuário
-            'JrGkX-cH-Qbjw8z-N' // Chave pública
+            REACT_APP_EMAILJS_PUBLIC_KEY // Chave pública
           )
           .then(() => {
             setStatusMessage('Email enviado com sucesso!');
