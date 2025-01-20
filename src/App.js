@@ -5,8 +5,6 @@ import Technologies from './components/Technologies';
 import ProjectList from './components/ProjectList';
 import ContactForm from './components/ContactForm';
 
-
-
 function App() {
   const [showFooter, setShowFooter] = useState(false);
 

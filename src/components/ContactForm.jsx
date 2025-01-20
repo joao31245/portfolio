@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import emailjs from 'emailjs-com';
 
-// Inicializa o EmailJS com sua Public Key
-emailjs.init(REACT_APP_EMAILJS_PUBLIC_KEY);
+// No need to initialize emailjs explicitly here if you're using `emailjs.send` and `emailjs.sendForm`
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +13,6 @@ const ContactForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
 
-  // Função para lidar com mudanças nos campos do formulário
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -23,36 +21,27 @@ const ContactForm = () => {
     }));
   };
 
-  // Função para lidar com o envio do formulário
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
     setStatusMessage('Enviando...');
 
-    // Prepara os dados manualmente para enviar o e-mail para o usuário
     const userEmailParams = {
       from_name: formData.from_name,
-      to_email: formData.from_email, // Campo usado no template do usuário
+      to_email: formData.from_email,
       message: formData.message,
     };
 
-    // Envia o e-mail para o administrador
+    const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID;
+    const adminTemplateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ADMIN;
+    const userTemplateId = process.env.REACT_APP_EMAILJS_TEMPLATE_USER;
+    const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
+
     emailjs
-      .sendForm(
-        REACT_APP_EMAILJS_SERVICE_ID, // Seu Service ID do EmailJS
-        REACT_APP_EMAILJS_TEMPLATE_ADMIN, // Template ID para o administrador
-        e.target, // O formulário HTML completo
-        REACT_APP_EMAILJS_PUBLIC_KEY // Chave pública
-      )
+      .sendForm(serviceId, adminTemplateId, e.target, publicKey)
       .then(() => {
-        // Após o envio bem-sucedido para o administrador, envia o e-mail para o usuário
         emailjs
-          .send(
-            REACT_APP_EMAILJS_SERVICE_ID, // Seu Service ID do EmailJS
-            REACT_APP_EMAILJS_TEMPLATE_USER, // Template ID para o usuário
-            userEmailParams, // Dados do e-mail do usuário
-            REACT_APP_EMAILJS_PUBLIC_KEY // Chave pública
-          )
+          .send(serviceId, userTemplateId, userEmailParams, publicKey)
           .then(() => {
             setStatusMessage('Email enviado com sucesso!');
             setIsSent(true);
@@ -120,9 +109,7 @@ const ContactForm = () => {
             {isLoading ? 'Enviando...' : 'Enviar Mensagem'}
           </button>
         </form>
-        {statusMessage && (
-          <p className="mt-4 text-sm">{statusMessage}</p>
-        )}
+        {statusMessage && <p className="mt-4 text-sm">{statusMessage}</p>}
       </div>
     </section>
   );
